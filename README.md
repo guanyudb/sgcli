@@ -12,7 +12,8 @@ pip install sgcli_wheel/<wheel_file>.whl --force-reinstall
 
 | Version | File | Status | Notes |
 |---------|------|--------|-------|
-| 0.0.7 | `databricks_serverless_gpu_cli-0.0.7-py3-none-any.whl` | **latest** | Performance, bug fixes, glob cancel, priority scheduling |
+| 0.0.7+fix | `databricks_serverless_gpu_cli-0.0.7+fix-py3-none-any.whl` | **latest** | Fix macOS snapshot root path bug |
+| 0.0.7 | `databricks_serverless_gpu_cli-0.0.7-py3-none-any.whl` | stable | Performance, bug fixes, glob cancel, priority scheduling |
 | 0.0.6+fix | `databricks_serverless_gpu_cli-0.0.6+fix-py3-none-any.whl` | hotfix | Hotfix on top of 0.0.6 (pre-hotfix), same wheel as the stable 0.0.6 |
 | 0.0.6 | `databricks_serverless_gpu_cli-0.0.6-py3-none-any.whl` | stable | Agent-friendly JSON, runtime variable interpolation, telemetry |
 | 0.0.6 (pre-hotfix) | `databricks_serverless_gpu_cli-0.0.6-py3-none-any-before-hotfix.whl` | archived | Snapshot before hotfix |
@@ -21,6 +22,10 @@ pip install sgcli_wheel/<wheel_file>.whl --force-reinstall
 | 0.0.3 | `databricks_serverless_gpu_cli-0.0.3-py3-none-any.whl` | stable | Uncommitted changes support, non-git folders |
 
 ## Changelog
+
+### 0.0.7+fix
+
+- [Bug-fix] Fix macOS snapshot root path detection. On macOS, `tar` includes AppleDouble metadata files (`._*`) with extended attributes. These sorted before the real top-level directory, causing `tar -tzf ... | head -1` to return `._project` instead of `project`, breaking the `$HOME` symlink and making code unreachable at runtime. Fix: pass `tar_directory_name` deterministically from the client instead of parsing the tarball at runtime, and exclude `._*` files from tarballs with `--exclude=._*`.
 
 ### 0.0.7
 
