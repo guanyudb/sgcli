@@ -1,8 +1,57 @@
-# SGCLI Wheel Releases
+# SGCLI
 
-Databricks Serverless GPU CLI (`sgcli`) wheel packages.
+Databricks Serverless GPU CLI (`sgcli`) wheel packages and test jobs.
 
-## Install
+## Quick Start
+
+### 1. Install SGCLI
+
+```bash
+pip install sgcli_wheel/databricks_serverless_gpu_cli-0.0.7+fix-py3-none-any.whl --force-reinstall
+```
+
+### 2. Authenticate
+
+```bash
+databricks auth login --host https://your-workspace.cloud.databricks.com --profile YOUR_PROFILE
+```
+
+### 3. Update `repo_path`
+
+Each test folder has a `train_workload.yaml` (or `train.yaml`). Update `repo_path` to point to your local clone:
+
+```yaml
+code_source:
+  type: snapshot
+  snapshot:
+    repo_path: /path/to/your/clone/of/this/repo
+```
+
+### 4. Run a single test
+
+```bash
+cd SGC_hello_world
+sgcli run -f train_workload.yaml -p YOUR_PROFILE --watch
+```
+
+### 5. Run all tests
+
+```bash
+./run_tests.sh -p YOUR_PROFILE
+```
+
+Add `--watch` to stream logs (output from parallel jobs will interleave).
+
+## Test Jobs
+
+| Folder | GPU | GPUs | Description |
+|--------|-----|------|-------------|
+| `SGC_hello_world/` | H100 | 8 | torchrun hello world — verifies CUDA, GPU access, multi-process |
+| `SGC_hello_world_error/` | H100 | 8 | Intentional init error — tests SGC error handling and run status |
+| `SGC_hello_world_a10/` | A10 | 2 | torchrun hello world on A10 |
+| `SGC_hello_world_error_a10/` | A10 | 2 | Intentional init error on A10 |
+
+## Install (other versions)
 
 ```bash
 pip install sgcli_wheel/<wheel_file>.whl --force-reinstall
